@@ -1,64 +1,65 @@
+from flask import Flask, request
+from twilio.twiml.messaging_response import MessagingResponse
+
+app = Flask(__name__)
+
 def get_response(msg):
     msg = msg.lower()
 
-    # Salamu
     if msg in ["hi", "hello", "mambo", "habari"]:
         return """Karibu 👋
-Tunatoa huduma za kidigitali kwa kiwango cha juu:
+Tunatoa huduma hizi:
 
-📌 Business Branding  
-📌 Social Media Management  
-📌 Printing Services  
-📌 Graphic Design  
-📌 Web Design  
-📌 Domain & Hosting  
-📌 Digital Marketing  
-📌 ICT Solutions  
+1. Branding
+2. Social Media
+3. Printing
+4. Design
+5. Website
+6. Hosting
+7. Marketing
+8. ICT
 
-Chagua huduma unayotaka kwa kuandika jina lake."""
+Andika huduma unayotaka."""
 
-    # Branding
     elif "branding" in msg:
-        return "Tunakusaidia kujenga brand yako 🔥\nLogos, identity, na muonekano wa biashara yako."
+        return "Tunafanya Business Branding 🔥 (logo, identity, brand setup)."
 
-    # Social Media
     elif "social" in msg:
-        return "Tunamanage kurasa zako za mitandao 📱\nContent, posting na growth ya followers."
+        return "Tunamanage social media 📱 (posts, growth, ads)."
 
-    # Printing
     elif "printing" in msg:
-        return "Tunaprint:\n✔ T-shirt\n✔ Banners\n✔ Business cards\n✔ Stickers\n\nUnahitaji ipi?"
+        return "Tunaprint T-shirt, banners, cards, stickers."
 
-    # Graphic Design
     elif "design" in msg:
-        return "Tunatengeneza designs za kisasa 🎨\nLogos, posters, flyers na zaidi."
+        return "Graphic Design 🎨 (logos, posters, flyers)."
 
-    # Website
-    elif "web" in msg or "website" in msg:
-        return "Tunatengeneza website za kisasa 🌐\nBiashara, kampuni na personal sites."
+    elif "website" in msg or "web" in msg:
+        return "Tunatengeneza website za kisasa 🌐."
 
-    # Hosting
     elif "hosting" in msg or "domain" in msg:
-        return "Tunauza domains na hosting 🚀\nTunakuunganisha online haraka na salama."
+        return "Tunatoa domain & hosting 🚀."
 
-    # Marketing
     elif "marketing" in msg:
-        return "Digital Marketing 📢\nFacebook Ads, Instagram Ads na Google Ads."
+        return "Tunafanya digital marketing 📢 (FB, IG, Google Ads)."
 
-    # ICT
     elif "ict" in msg:
-        return "Tunatoa ICT Solutions 💻\nSoftware, support na ushauri wa kitaalamu."
+        return "Tunatoa ICT solutions 💻 (support, systems)."
 
-    # Default
     else:
-        return """Samahani sijakuelewa 😅
+        return "Samahani 😅 Andika: Branding, Social, Printing, Design, Website, Hosting, Marketing au ICT."
 
-Chagua huduma:
-✔ Branding
-✔ Social Media
-✔ Printing
-✔ Design
-✔ Website
-✔ Hosting
-✔ Marketing
-✔ ICT"""
+@app.route("/", methods=["GET"])
+def home():
+    return "WhatsApp Bot is running!"
+
+@app.route("/webhook", methods=["POST"])
+def webhook():
+    incoming_msg = request.values.get('Body', '')
+    resp = MessagingResponse()
+    msg = resp.message()
+    reply = get_response(incoming_msg)
+    msg.body(reply)
+    return str(resp)
+
+if __name__ == "__main__":
+    app.run(debug=True)
