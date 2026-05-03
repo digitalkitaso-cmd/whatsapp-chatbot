@@ -1,40 +1,64 @@
-from flask import Flask, request
-from twilio.twiml.messaging_response import MessagingResponse
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
+def get_response(msg):
+    msg = msg.lower()
 
-app = Flask(__name__)
+    # Salamu
+    if msg in ["hi", "hello", "mambo", "habari"]:
+        return """Karibu 👋
+Tunatoa huduma za kidigitali kwa kiwango cha juu:
 
-examples = [
-    ("hello", "Hello! How can I help you today?"),
-    ("hi", "Hello! How can I help you today?"),
-    ("bye", "Goodbye! Have a great day!")
-]
+📌 Business Branding  
+📌 Social Media Management  
+📌 Printing Services  
+📌 Graphic Design  
+📌 Web Design  
+📌 Domain & Hosting  
+📌 Digital Marketing  
+📌 ICT Solutions  
 
-questions = [q for q, a in examples]
-answers = [a for q, a in examples]
+Chagua huduma unayotaka kwa kuandika jina lake."""
 
-vectorizer = TfidfVectorizer()
-X = vectorizer.fit_transform(questions)
+    # Branding
+    elif "branding" in msg:
+        return "Tunakusaidia kujenga brand yako 🔥\nLogos, identity, na muonekano wa biashara yako."
 
-def get_response(user_input):
-    user_vec = vectorizer.transform([user_input])
-    similarity = cosine_similarity(user_vec, X)
-    index = np.argmax(similarity)
-    return answers[index]
+    # Social Media
+    elif "social" in msg:
+        return "Tunamanage kurasa zako za mitandao 📱\nContent, posting na growth ya followers."
 
-@app.route("/")
-def home():
-    return "WhatsApp Bot is running!"
+    # Printing
+    elif "printing" in msg:
+        return "Tunaprint:\n✔ T-shirt\n✔ Banners\n✔ Business cards\n✔ Stickers\n\nUnahitaji ipi?"
 
-@app.route("/webhook", methods=["POST"])
-def webhook():
-    incoming_msg = request.values.get('Body', '').lower()
-    response = MessagingResponse()
-    reply = get_response(incoming_msg)
-    response.message(reply)
-    return str(response)
+    # Graphic Design
+    elif "design" in msg:
+        return "Tunatengeneza designs za kisasa 🎨\nLogos, posters, flyers na zaidi."
 
-if __name__ == "__main__":
-    app.run(debug=True)
+    # Website
+    elif "web" in msg or "website" in msg:
+        return "Tunatengeneza website za kisasa 🌐\nBiashara, kampuni na personal sites."
+
+    # Hosting
+    elif "hosting" in msg or "domain" in msg:
+        return "Tunauza domains na hosting 🚀\nTunakuunganisha online haraka na salama."
+
+    # Marketing
+    elif "marketing" in msg:
+        return "Digital Marketing 📢\nFacebook Ads, Instagram Ads na Google Ads."
+
+    # ICT
+    elif "ict" in msg:
+        return "Tunatoa ICT Solutions 💻\nSoftware, support na ushauri wa kitaalamu."
+
+    # Default
+    else:
+        return """Samahani sijakuelewa 😅
+
+Chagua huduma:
+✔ Branding
+✔ Social Media
+✔ Printing
+✔ Design
+✔ Website
+✔ Hosting
+✔ Marketing
+✔ ICT"""
